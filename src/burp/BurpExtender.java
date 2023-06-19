@@ -39,12 +39,14 @@ class Monitor implements Runnable, IExtensionStateListener {
     }
 
     public void extensionUnloaded() {
+        // 反连平台监控器必须实现"扩展状态监听器IExtensionStateListener"接口，以便当用户关闭该扩展的时候，后台运行的监听线程可以自动关闭。
         Utilities.out("Extension unloading - triggering abort");
         stop = true;
         Thread.currentThread().interrupt();
     }
 
     public void run() {
+        // 监听器单独作为一个线程运行，每隔10s从反连平台拉取一次请求日志
         try {
             while (!stop) {
                 Thread.sleep(10000);
